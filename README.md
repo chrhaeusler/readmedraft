@@ -2,7 +2,10 @@
 
 This repository contains the raw data and all code to generate the results in Häusler C.O. & Hanke M. (2021).
 
-Kommentar: Adressen sind mitunter nicht öffentlich zugänglich; alle Befehle sind im Augenblick so, dass sie zum Ersten mal mit datalad aufgerufen werden, um das dataset von Grund auf aufzubauen
+Kommentar: 
+1) alle Befehle sind im Augenblick so, dass sie zum Ersten mal mit datalad aufgerufen werden, um das dataset von Grund auf aufzubauen
+2) Adressen sind mitunter nicht öffentlich zugänglich
+
 
 ## install subdatasets and get the raw data
 
@@ -40,6 +43,45 @@ Kommentar: Adressen sind mitunter nicht öffentlich zugänglich; alle Befehle si
     '{inputs}' \
     aomovie aomovie \
     '{outputs}'
+    
+    # install annotation of speech as subdataset
+    datalad install -d . -s juseless.inm7.de:/data/group/psyinf/studyforrest-speechannotation inputs/studyforrest-speechannotation
+    # download the annotation as BIDS-conform .tsv
+    datalad get inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv
+    
+    # segment the speech annotation using timings of the audio-description
+    # NOW HOSTED ON OSF.io
+    datalad run \
+    -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
+    -o events/segments \
+    ./inputs/studyforrest-data-annotations/code/researchcut2segments.py \
+    '{inputs}' \
+    aomovie aomovie \
+    '{outputs}'
+    
+    # segment the speech annotation using timings of the audio-visual movie
+    # NOW hosted on osf.io
+    datalad run \
+    -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
+    -o events/segments \
+    ./inputs/studyforrest-data-annotations/code/researchcut2segments.py \
+    '{inputs}' \
+    avmovie avmovie \
+    '{outputs}'
+    
+## manual addition of confound annotations and a script
+    # add low-level confound files of audio-visual movie manually & save (folder "avconfounds")
+    datalad save -m 'add low-level confound files for audio-visual movie to /events/segments'
+    # add low-level confound files of audio-description manually & save (folder "aoconfounds")
+    datalad save -m 'add low-level confound files for audio-description to /events/segments'
+    # add script that code/confounds2onsets.py
+    datalad save -m 'add script that converts & copies confound files to onsets directories'
 
-
+## copy confound annotations into onsets directories of movie and audio-description
+    # consider directory for corresponding fMRI run
+    # rename filenames according to naming conventions of regressors
+    datalad run \
+    -i events/segments \
+    -o events/onsets \
+    ./code/confounds2onsets.py -i '{inputs}' -o '{outputs}'
 
