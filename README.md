@@ -38,7 +38,7 @@ comment: following source for the speech-anno is juseless not osf.io
     
     # install the annotation of speech as subdataset
     datalad install -d . -s juseless.inm7.de:/data/group/psyinf/studyforrest-speechannotation inputs/studyforrest-speechannotation
-    # download the annotation as BIDS-conform .tsv
+    # download the annotation as TSV-file (BIDS)
     datalad get inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv
     
 ## segmenting of continuous annotations
