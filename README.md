@@ -1,4 +1,4 @@
-# Processing of visual and non-visual naturalistic spatial information in the "parahippocampal place area"
+# Processing of visual and non-visual naturalistic spatial information in the "parahippocampal place area": from raw data to results
 
 This repository contains the raw data and all code to generate the results in Häusler C.O. & Hanke M. (2021).
 
