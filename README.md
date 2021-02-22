@@ -232,6 +232,72 @@ hence: it is the shifted timings in individual segments compared to the whole st
 ## manually add bash script that handles custom templates for FEAT
     datalad save -m "add script that add templates & transformation matrices to 1st lvl result directories of Feat"
     
+## running the analyses via condor_submit on a computer cluster & manually save results
+    # add file "condor-commands-for-cm.txt" that contains the following commands to manually submit the subsequent analyses to HTCondor
+    datalad save -m "add txt file with instructions for manually starting Condor Jobs from CM"
+    
+    # movie, group space, first level
+    condor_submit code/compute_1st-lvl_movie-ppa-grp.submit
+    # in .feat-directories, create templates and transforms
+    ./code/reg2std4feat inputs/studyforrest-data-templatetransforms bold3Tp2 grpbold3Tp2 sub-*/run-?_movie-ppa-grp.feat
+    # movie, group space, second level
+    condor_submit code/compute_2nd-lvl_movie-ppa-grp.submit
+    # movie, group space, third level
+    condor_submit code/compute_3rd-lvl_movie-ppa-grp.submit
+    # save results of first to third level
+    datalad save -m '3rd lvl results movie (group)'
+    
+    # audio-description, group space, first level
+    condor_submit code/compute_1st-lvl_audio-ppa-grp.submit
+    # in .feat-directories, create templates and transforms
+    ./code/reg2std4feat inputs/studyforrest-data-templatetransforms bold3Tp2 grpbold3Tp2 sub-*/run-?_audio-ppa-grp.feat
+    # audio-description, group space, second level
+    condor_submit code/compute_2nd-lvl_audio-ppa-grp.submit    
+    # audio-description, group space, third level
+    condor_submit code/compute_3rd-lvl_audio-ppa-grp.submit
+    # save results of first to third level
+    datalad save -m '3rd lvl results audio (group)'
+
+    # movie, subject space, first level
+    condor_submit code/compute_1st-lvl_movie-ppa-ind.submit
+    # in .feat-directories, create templates and transforms
+    ./code/reg2std4feat inputs/studyforrest-data-templatetransforms bold3Tp2 bold3Tp2 sub-*/run-?_movie-ppa-ind.feat
+    # movie, subject space, second level
+    condor_submit code/compute_2nd-lvl_audio-ppa-ind.submit
+    # save results of first to second level
+    datalad save -m '2nd lvl results audio (individuals)'
+    
+    # audio-description, subjects space, first level
+    condor_submit code/compute_1st-lvl_audio-ppa-ind.submit
+    # in .feat-directories, create templates and transforms
+    ./code/reg2std4feat inputs/studyforrest-data-templatetransforms bold3Tp2 bold3Tp2 sub-*/run-?_audio-ppa-ind.feat
+    # audio-description, subject space, second level
+    condor_submit code/compute_2nd-lvl_audio-ppa-ind.submit
+    # audio-description, group space, third level
+    datalad save -m '2nd lvl results audio (individuals)'   
+    # save results of first to third level
+    
+## some cleaning that we did
+    git annex unused
+    git annex dropunused all --force
+    datalad drop --nocheck sub*/*.feat/filtered_func_data.nii.gz
+    datalad drop --nocheck sub*/*.feat/stats/res4d.nii.gz
+
+## comment: all subdatasets in ./inputs are still installed and contain data
+see /data/project/studyforrest_ppa/*
+
+
+
+
+
+
+
+
+
+
+
+    
+    
     
 
 
