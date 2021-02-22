@@ -34,15 +34,15 @@ Kommentar:
     datalad get inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv
     
 # segmenting of continuous annotations
-    # segment the location annotation using timings of the audio-description
+    # segment the location annotation using timings of the audio-visual movie
     datalad run \
     -i inputs/studyforrest-data-annotations/researchcut/locations.tsv \
     -o events/segments \
     ./inputs/studyforrest-data-annotations/code/researchcut2segments.py \
     '{inputs}' \
-    aomovie aomovie \
+    avmovie avmovie \
     '{outputs}'
-        
+    
     # segment the speech annotation using timings of the audio-description
     # NOW HOSTED ON OSF.io
     datalad run \
@@ -53,7 +53,16 @@ Kommentar:
     aomovie aomovie \
     '{outputs}'
     
-    # segment the speech annotation using timings of the audio-visual movie
+    # for control contrasts, segment the location annotation using timings of the audio-description
+    datalad run \
+    -i inputs/studyforrest-data-annotations/researchcut/locations.tsv \
+    -o events/segments \
+    ./inputs/studyforrest-data-annotations/code/researchcut2segments.py \
+    '{inputs}' \
+    aomovie aomovie \
+    '{outputs}'
+    
+    # for control contrasts, segment the speech annotation using timings of the audio-visual movie
     # NOW hosted on osf.io
     datalad run \
     -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
