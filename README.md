@@ -4,7 +4,7 @@ This repository contains the raw data and all code to generate the results in HÃ
 
 ## install subdatasets and get the raw data
 
-install fmri data from audio-visual movie and its audio-description
+    # install fmri data from audio-visual movie and its audio-description
     datalad install -d . -s https://github.com/psychoinformatics-de/studyforrest-data-aligned  inputs/studyforrest-data-aligned
 
 get 4D fMRI data and motion correction parameters
