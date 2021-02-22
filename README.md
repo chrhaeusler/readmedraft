@@ -33,7 +33,7 @@ Kommentar:
     # download the annotation as BIDS-conform .tsv
     datalad get inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv
     
-# segmenting of continuous annotations
+## segmenting of continuous annotations
     # segment the location annotation using timings of the audio-visual movie
     datalad run \
     -i inputs/studyforrest-data-annotations/researchcut/locations.tsv \
@@ -53,6 +53,10 @@ Kommentar:
     aomovie aomovie \
     '{outputs}'
     
+comment: following "ao" as input-timing is 'correct' based on the new annotation created by montreal forced aligner
+random shift +/- 40 ms around 0 of whole movie vs. whole audio-description; manual annotation was shifted manually because there was a lag of 40 ms at the beginning but across the whole stimulis that turned out to be +/- 40 around 40 instead of 0
+hence: it is the shifted timings in individual segments compared to the whole stimuli that matter and not whole movie vs. whole audio-description
+    
     # for control contrasts, segment the location annotation using timings of the audio-description
     datalad run \
     -i inputs/studyforrest-data-annotations/researchcut/locations.tsv \
@@ -61,6 +65,8 @@ Kommentar:
     '{inputs}' \
     aomovie aomovie \
     '{outputs}'
+    
+ comment: following "av" as input-timing is 'correct' based on the new annotation created by montreal forced aligner
     
     # for control contrasts, segment the speech annotation using timings of the audio-visual movie
     # NOW hosted on osf.io
