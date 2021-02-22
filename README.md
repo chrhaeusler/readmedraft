@@ -90,7 +90,7 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     # add low-level confound files of audio-description manually & save (folder "aoconfounds")
     datalad save -m 'add low-level confound files for audio-description to /events/segments'
 
-## convert confound annotations into FSL onset files
+## convert confound annotations into FEAT onset files
     # add script code/confounds2onsets.py
     datalad save -m 'add script that converts & copies confound files to onsets directories'
     # perform the conversion considering the directories of corresponding fMRI runs and
@@ -100,7 +100,7 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     -o events/onsets \
     ./code/confounds2onsets.py -i '{inputs}' -o '{outputs}'
     
-## create onsets files from the segmented annotation of cuts & locations
+## create FEAT onsets files from the segmented annotation of cuts & locations
     # add the script that performs the conversion
     datalad save -m 'add script that creates event files for FSL from the segmented location annotation'
 
@@ -124,7 +124,7 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     -inp 'locations_run-?_events.tsv' \
     -outd '{outputs}'
    
-## create onsets files from the segmented annotation of speech
+## create FEAT onsets files from the segmented annotation of speech
     # add the script that performs the conversion
     datalad save -m 'add script that creates event files for FSL from the segmented speech annotation'
 
@@ -146,7 +146,7 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     -inp 'fg_rscut_ad_ger_speech_tagged_run-*.tsv' \
     -outd '{outputs}'
     
-## copy event files to folders of individual subjects
+## copy FEAT event files to folders of individual subjects
 
     # manually add the script that creates directories & handles the copying
     datalad save -m 'add script that creates subject directories and copies FSL event files  into it'
@@ -167,7 +167,7 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     -onsets 'events/onsets/aomovie/run-?/*.txt' \
     -o './'
     
-## manually add the design file templates
+## manually add the templates of FEAT design files
    
     # manually add the script that creates first level individual design files from template
     datalad save -m 'add python script that creates individual (1st level) design files from templates'
@@ -185,7 +185,7 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     datalad save -m 'add FSL design files (lvl 1-2) for movie (individuals)'
     datalad save -m 'add FSL design files (lvl 1-2) for audio (individuals)'
     
-## from templates, create design files for individual subjects
+## from templates, create FEAT design files for individual subjects
   
     # movie, group space, first level
     datalad run \
@@ -235,10 +235,10 @@ comment: following "ao" as input-timing is 'correct' based on the new annotation
     -m "for audio analysis (individuals), generate individual 2nd lvl design files from template" \
     "./code/generate_2nd-lvl-design_audio-ppa-ind.sh"
     
-## manually add bash script that handles custom templates for FEAT
+## manually add bash script that handles createn custom standard space templates & matrices for FEAT
     datalad save -m "add script that add templates & transformation matrices to 1st lvl result directories of Feat"
     
-## running the analyses via condor_submit on a computer cluster & manually save results
+## run the analyses via condor_submit on a computer cluster & manually save results
     # add file "condor-commands-for-cm.txt" that contains the following commands to manually submit the subsequent analyses to HTCondor
     datalad save -m "add txt file with instructions for manually starting Condor Jobs from CM"
     
