@@ -51,7 +51,6 @@ comment: following source for the speech-anno is juseless not osf.io
     '{outputs}'
     
     # segment the speech annotation using timings of the audio-description segments
-    # NOW HOSTED ON OSF.io
     datalad run \
     -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
     -o events/segments \
