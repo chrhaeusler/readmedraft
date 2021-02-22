@@ -3,38 +3,41 @@
 This repository contains the raw data and all code to generate the results in Häusler C.O. & Hanke M. (2021).
 
 Kommentar: 
-1) alle Befehle sind im Augenblick so, dass sie zum Ersten mal mit datalad aufgerufen werden, um das dataset von Grund auf aufzubauen
-2) die Reihenfolge ist minimal gemäß des roten Fadens in der Method Section im Paper angepasst worden (d.h. weicht minimal von der history im Analysis-Dataset ab)
+1) alle Befehle sind im Augenblick so, dass sie zum Ersten mal mit datalad aufgerufen werden, um das dataset von Grund auf aufzubauen (s. "datalad save" of manually added scripts; alle befehle in "datalad run" gewrappt)
+2) die Reihenfolge ist minimal gemäß des roten Fadens in der Method Section im Paper angepasst worden (d.h. readme weicht minimal von der git history im Analysis-Dataset ab)
 3) Adressen sind mitunter nicht öffentlich zugänglich
 
 
 ## install subdatasets and get the raw data
 
-    # install subdatasets providing fMRI data from the audio-visual movie and its audio-description
+    # install subdataset that provides motion corrected fMRI data from the audio-visual movie and its audio-description
     datalad install -d . -s https://github.com/psychoinformatics-de/studyforrest-data-aligned inputs/studyforrest-data-aligned
-    # download 4D fMRI data and motion correction parameters
+    # download 4D fMRI data (and motion correction parameters of the movie) 
     datalad get inputs/studyforrest-data-aligned/sub-??/in_bold3Tp2/sub-??_task-a?movie_run-?_bold*.*
     
-    # get motion correction parameter files for phase 1 data
-    # THIS DATA MIGHT NOT BE PUBLIC ?!
+comment: following data source might not publicly accessible ?!
+    
+    # install subdataset that provides the original 7 Tesla data to get the motion correction parameters of the audio-descriptio
     datalad install -d . -s juseless.inm7.de:/data/project/studyforrest/collection/phase1 inputs/phase1
     datalad get inputs/phase1/sub???/BOLD/task001_run00?/bold_dico_moco.txt
 
-    # install & get templates and transforms
+    # install subdataset "template & transforms", and download the relevant images
     datalad install -d . -s https://github.com/psychoinformatics-de/studyforrest-data-templatetransforms inputs/studyforrest-data-templatetransforms
     datalad get inputs/studyforrest-data-templatetransforms/sub-*/bold3Tp2/
     datalad get inputs/studyforrest-data-templatetransforms/templates/*
     
-    # install annotation of cuts & locations (as subdataset in psychoinformatics-de/studyforrest-data-annotations)
+    # install subdataset "studyforrest-data-annotations" that contains the annotation of cuts & locations as subdataset 
     datalad install -d . -s https://github.com/psychoinformatics-de/studyforrest-data-annotations inputs/studyforrest-data-annotations
     
-     # install annotation of speech as subdataset
+comment: following source for the speech-anno is juseless not osf.io
+    
+     # install the annotation of speech as subdataset
     datalad install -d . -s juseless.inm7.de:/data/group/psyinf/studyforrest-speechannotation inputs/studyforrest-speechannotation
     # download the annotation as BIDS-conform .tsv
     datalad get inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv
     
 ## segmenting of continuous annotations
-    # segment the location annotation using timings of the audio-visual movie
+    # segment the location annotation using timings of the audio-visual movie segments
     datalad run \
     -i inputs/studyforrest-data-annotations/researchcut/locations.tsv \
     -o events/segments \
@@ -43,7 +46,7 @@ Kommentar:
     avmovie avmovie \
     '{outputs}'
     
-    # segment the speech annotation using timings of the audio-description
+    # segment the speech annotation using timings of the audio-description segments
     # NOW HOSTED ON OSF.io
     datalad run \
     -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
@@ -53,11 +56,22 @@ Kommentar:
     aomovie aomovie \
     '{outputs}'
     
+comment: following "av" as input-timing is 'correct' based on the new annotation created by montreal forced aligner because
+random shift +/- 40 ms around 0 of whole movie vs. whole audio-description; previous manual annotation was shifted manually before performing the annotation because there was a lag of 40 ms at the beginning; but it turned out be +/- 40 around 40 over the course of the whole stimulus 
+hence: the shifted timings in individual segments compared to the whole stimuli is far more importante that the jitter of whole movie vs. whole audio-description.
+
+    # for control contrasts, segment the speech annotation using timings of the audio-visual movie segments
+    datalad run \
+    -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
+    -o events/segments \
+    ./inputs/studyforrest-data-annotations/code/researchcut2segments.py \
+    '{inputs}' \
+    avmovie avmovie \
+    '{outputs}'
+
 comment: following "ao" as input-timing is 'correct' based on the new annotation created by montreal forced aligner
-random shift +/- 40 ms around 0 of whole movie vs. whole audio-description; manual annotation was shifted manually because there was a lag of 40 ms at the beginning but across the whole stimulis that turned out to be +/- 40 around 40 instead of 0
-hence: it is the shifted timings in individual segments compared to the whole stimuli that matter and not whole movie vs. whole audio-description
-    
-    # for control contrasts, segment the location annotation using timings of the audio-description
+
+    # for control contrasts, segment the location annotation using timings of the audio-description segments
     datalad run \
     -i inputs/studyforrest-data-annotations/researchcut/locations.tsv \
     -o events/segments \
@@ -66,19 +80,7 @@ hence: it is the shifted timings in individual segments compared to the whole st
     aomovie aomovie \
     '{outputs}'
     
- comment: following "av" as input-timing is 'correct' based on the new annotation created by montreal forced aligner
-    
-    # for control contrasts, segment the speech annotation using timings of the audio-visual movie
-    # NOW hosted on osf.io
-    datalad run \
-    -i inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv \
-    -o events/segments \
-    ./inputs/studyforrest-data-annotations/code/researchcut2segments.py \
-    '{inputs}' \
-    avmovie avmovie \
-    '{outputs}'
-    
-## manual addition of confound annotations and a script that gets the annotation in shape for the subsequent analyses
+## manual addition of confound annotations and a script that gets the annotation in shape for the subsequent FEAT analyses
     # add low-level confound files of audio-visual movie manually & save (folder "avconfounds")
     datalad save -m 'add low-level confound files for audio-visual movie to /events/segments'
     # add low-level confound files of audio-description manually & save (folder "aoconfounds")
@@ -277,7 +279,7 @@ hence: it is the shifted timings in individual segments compared to the whole st
     datalad save -m '2nd lvl results audio (individuals)'   
     # save results of first to third level
     
-## some cleaning that we did
+## comment: some cleaning that we did
     git annex unused
     git annex dropunused all --force
     datalad drop --nocheck sub*/*.feat/filtered_func_data.nii.gz
