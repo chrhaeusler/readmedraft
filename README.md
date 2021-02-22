@@ -139,3 +139,99 @@ hence: it is the shifted timings in individual segments compared to the whole st
     -ind '{inputs}' \
     -inp 'fg_rscut_ad_ger_speech_tagged_run-*.tsv' \
     -outd '{outputs}'
+    
+## copy event files to folders of individual subjects
+
+    # manually add the script that creates directories & handles the copying
+    datalad save -m 'add script that creates subject directories and copies FSL event files  into it'
+
+    # create subjects folders & copy events with timing of the audio-visual movie
+    datalad run \
+    -m "create subject folders & copy event files to it" \
+    ./code/onsets2subfolders.py \
+    -fmri 'inputs/studyforrest-data-aligned/sub-??/in_bold3Tp2/sub-??_task-aomovie_run-1_bold.nii.gz' \
+    -onsets 'events/onsets/avmovie/run-?/*.txt' \
+    -o './'
+    
+    # copy events with timing of the audio-description 
+    datalad run \
+    -m "copy event files with audio-description with movie timings to subject folders" \
+    ./code/onsets2subfolders.py \
+    -fmri 'inputs/studyforrest-data-aligned/sub-??/in_bold3Tp2/sub-??_task-aomovie_run- 1_bold.nii.gz' \
+    -onsets 'events/onsets/aomovie/run-?/*.txt' \
+    -o './'
+    
+## manually add the design file templates
+   
+    # manually add the script that creates first level individual design files from template
+    datalad save -m 'add python script that creates individual (1st level) design files from templates'
+
+   
+    # analyses in group space, level 1-3 (e.g. 1st-lvl_movie-ppa-grp.fsf, 2nd-lvl_movie-ppa-grp.fsf, 3rd-lvl_movie-ppa-grp-1.fsf)
+    # both steps include adding the bash scripts that take 2nd level templates as input and create design-files in individual directories 
+    # (e.g. generate_2nd-lvl-design_movie-ppa-grp.sh)
+    datalad save -m 'add FSL design files (lvl 1-3) for movie (group)'
+    datalad save -m 'add FSL design files (lvl 1-3) for audio (group)'
+
+    # analyses in subject space, level 1-2 (e.g. 1st-lvl_movie-ppa-ind.fsf, 2nd-lvl_movie-ppa-ind.fsf)
+    # both steps include adding the bash scripts that take 2nd level templates as input and create design-files in individual directories 
+    # (e.g. generate_2nd-lvl-design_movie-ppa-ind.sh)
+    datalad save -m 'add FSL design files (lvl 1-2) for movie (individuals)'
+    datalad save -m 'add FSL design files (lvl 1-2) for audio (individuals)'
+    
+## from templates, create design files for individual subjects
+  
+    # movie, group space, first level
+    datalad run \
+    -m 'for movie analysis (group), create individual (1st level) design files from template' \
+    code/generate_1st-lvl-design.py \
+    -fmri 'inputs/studyforrest-data-aligned/sub-01/in_bold3Tp2/sub-01_task-avmovie_run-1_bold.nii.gz' \
+    -design 'code/1st-lvl_movie-ppa-grp.fsf'
+
+    # movie, group space, second level
+    datalad run \
+    -m "for movie analysis (group), generate individual 2nd lvl design files from template" \
+    "./code/generate_2nd-lvl-design_movie-ppa-grp.sh"
+
+    # audio-description, group space, first level
+    datalad run \
+    -m 'for audio analysis (group), create individual 1st level design files from template' \
+    code/generate_1st-lvl-design.py \
+    -fmri 'inputs/studyforrest-data-aligned/sub-01/in_bold3Tp2/sub-01_task-aomovie_run-1_bold.nii.gz' \
+    -design 'code/1st-lvl_audio-ppa-grp.fsf'
+
+    # audio-description, group space, second level
+    datalad run \
+    -m "for audio analysis (group), generate individual 2nd lvl design files from template" \
+    "./code/generate_2nd-lvl-design_audio-ppa-grp.sh"
+
+    # movie, subject space, first level
+    datalad run \
+    -m 'for movie analysis (individuals), create individual 1st level design files from template' \
+    code/generate_1st-lvl-design.py \
+    -fmri 'inputs/studyforrest-data-aligned/sub-01/in_bold3Tp2/sub-01_task-avmovie_run-1_bold.nii.gz' \
+    -design 'code/1st-lvl_movie-ppa-ind.fsf'
+
+    # movie, subject space, second level
+    datalad run \
+    -m "for movie analysis (individuals), generate individual 2nd lvl design files from template" \
+    "./code/generate_2nd-lvl-design_movie-ppa-ind.sh"
+
+    # audio-description, subject space, first level
+    datalad run \
+    -m 'for audio analysis (individuals), create individual 1st level design files from template' \
+    code/generate_1st-lvl-design.py \
+    -fmri 'inputs/studyforrest-data-aligned/sub-01/in_bold3Tp2/sub-01_task-aomovie_run-1_bold.nii.gz' \
+    -design 'code/1st-lvl_audio-ppa-ind.fsf'
+
+    # audio-description, subject space, second level
+    datalad run \
+    -m "for audio analysis (individuals), generate individual 2nd lvl design files from template" \
+    "./code/generate_2nd-lvl-design_audio-ppa-ind.sh"
+    
+## manually add bash script that handles custom templates for FEAT
+    datalad save -m "add script that add templates & transformation matrices to 1st lvl result directories of Feat"
+    
+    
+
+
