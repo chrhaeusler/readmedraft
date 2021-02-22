@@ -31,6 +31,7 @@ comment: following data source might not publicly accessible ?!
     datalad get inputs/studyforrest-data-templatetransforms/templates/*
     
     # install subdataset "studyforrest-data-annotations" that contains the annotation of cuts & locations as subdataset 
+    # and "code/researchcut2segments.py" that we need to segment the (continuous) annotations
     datalad install -d . -s https://github.com/psychoinformatics-de/studyforrest-data-annotations inputs/studyforrest-data-annotations
     
 comment: following source for the speech-anno is juseless not osf.io
