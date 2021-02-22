@@ -8,6 +8,10 @@ Kommentar:
 3) Adressen sind mitunter nicht öffentlich zugänglich
 
 
+## clone the DataLad dataset
+comment: probably the correct start of the readme; where do we wanna host the dataset?
+following are the steps to create the dataset from scratch
+
 ## install subdatasets and get the raw data
 
     # install subdataset that provides motion corrected fMRI data from the audio-visual movie and its audio-description
@@ -31,7 +35,7 @@ comment: following data source might not publicly accessible ?!
     
 comment: following source for the speech-anno is juseless not osf.io
     
-     # install the annotation of speech as subdataset
+    # install the annotation of speech as subdataset
     datalad install -d . -s juseless.inm7.de:/data/group/psyinf/studyforrest-speechannotation inputs/studyforrest-speechannotation
     # download the annotation as BIDS-conform .tsv
     datalad get inputs/studyforrest-speechannotation/annotation/fg_rscut_ad_ger_speech_tagged.tsv
